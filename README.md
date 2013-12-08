@@ -5,6 +5,18 @@ People
 ------
 **rate** has been written by Markus Geiss (mgeiss257@gmail.com).
 
+Usage
+-----
+    final TestScenario testScenario = TestScenario.create("1", "some useful description")
+            .host("http://localhost:4711")
+            .path("api")
+            .workingHour(WorkingHour.ONE_HOUR)
+            .rampUpDelay(RampUpDelay.FIVE_MINUTES)
+            .addRobot(100, NewsFeedRobot.class)
+            .build();
+
+    testScenario.execute();
+
 
 License
 -------
