@@ -7,7 +7,7 @@ People
 
 Usage
 -----
-    final TestScenario testScenario = TestScenario.create("1", "some useful description")
+    final TestScenario testScenario = TestScenario.create("My test scenario", "some useful description")
             .host("http://localhost:4711")
             .path("api")
             .workingHour(WorkingHour.ONE_HOUR)
