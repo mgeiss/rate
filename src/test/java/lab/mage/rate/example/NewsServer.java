@@ -35,7 +35,7 @@ public class NewsServer {
         provider.setMapper(jsonMapper);
         resourceConfig.register(provider);
 
-        // create Grizzly instance and add handler
+        // getConnection Grizzly instance and add handler
         final HttpHandler handler = ContainerFactory.createContainer(GrizzlyHttpContainer.class, resourceConfig);
         final URI uri = new URI("http://localhost:4711/");
         final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri);

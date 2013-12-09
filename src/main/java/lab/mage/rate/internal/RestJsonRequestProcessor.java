@@ -198,7 +198,7 @@ public class RestJsonRequestProcessor implements RequestProcessor {
                         "received_bytes, status, duration, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            final Connection connection = JDBCConnectionProvider.create();
+            final Connection connection = JDBCConnectionProvider.getInstance().getConnection();
 
             final PreparedStatement preparedStatement = connection.prepareStatement(insertStatement);
             preparedStatement.setInt(1, this.testScenarioId);

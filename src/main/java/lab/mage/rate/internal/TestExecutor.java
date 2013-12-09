@@ -40,7 +40,7 @@ public class TestExecutor {
 
         int id = -1;
         try {
-            final Connection connection = JDBCConnectionProvider.create();
+            final Connection connection = JDBCConnectionProvider.getInstance().getConnection();
 
             final Statement statement = connection.createStatement();
             final ResultSet resultSet = statement.executeQuery("select nextval('test_scenario_id_seq')");
@@ -64,7 +64,7 @@ public class TestExecutor {
 
             preparedStatement.close();
             connection.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return id;
