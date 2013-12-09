@@ -66,37 +66,22 @@ public class RestJsonRequestProcessor implements RequestProcessor {
             currentTarget = currentTarget.path(resourcePath);
         }
 
-        if (request.getQueryParams() != null) {
-            for (Map.Entry<String, String> entry : request.getQueryParams().entrySet()) {
-                currentTarget = currentTarget.queryParam(entry.getKey(), entry.getValue());
-            }
-        }
+        currentTarget = this.setQueryParams(currentTarget, request);
 
         final Invocation.Builder invocationBuilder = currentTarget.request();
 
-        if (request.getHeaderParams() != null) {
-            for (Map.Entry<String, String> entry : request.getHeaderParams().entrySet()) {
-                invocationBuilder.header(entry.getKey(), entry.getValue());
-            }
-        }
+        this.setHeaderParams(invocationBuilder, request);
 
         final javax.ws.rs.core.Response serverResponse = invocationBuilder.get();
 
         String json = null;
         if (serverResponse.getStatus() == 200) {
-            try {
-                json = new Scanner((InputStream) serverResponse.getEntity(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
-            } catch (Throwable th) {}
+            json = this.toJson(serverResponse);
         }
 
-        if (serverResponse.getHeaders() != null) {
-            final HashMap<String, String> headerParams = new HashMap<>();
-            for (Map.Entry<String, List<Object>> entry : serverResponse.getHeaders().entrySet()) {
-                headerParams.put(entry.getKey(), StringUtil.join(entry.getValue(), ","));
-            }
-        }
+        final HashMap<String, String> headerParams = this.retrieveHeaderParams(serverResponse);
 
-        return new Response(serverResponse.getStatus(), null, json);
+        return new Response(serverResponse.getStatus(), headerParams, json);
     }
 
     private Response post(final String resourcePath, final Request request) {
@@ -105,36 +90,20 @@ public class RestJsonRequestProcessor implements RequestProcessor {
             currentTarget = currentTarget.path(resourcePath);
         }
 
-        if (request.getQueryParams() != null) {
-            for (Map.Entry<String, String> entry : request.getQueryParams().entrySet()) {
-                currentTarget = currentTarget.queryParam(entry.getKey(), entry.getValue());
-            }
-        }
+        currentTarget = this.setQueryParams(currentTarget, request);
 
         final Invocation.Builder invocationBuilder = currentTarget.request(MediaType.APPLICATION_JSON);
 
-        if (request.getHeaderParams() != null) {
-            for (Map.Entry<String, String> entry : request.getHeaderParams().entrySet()) {
-                invocationBuilder.header(entry.getKey(), entry.getValue());
-            }
-        }
+        this.setHeaderParams(invocationBuilder, request);
 
         final javax.ws.rs.core.Response serverResponse = invocationBuilder.post(Entity.json(request.getJson()));
 
         String json = null;
         if ((serverResponse.getStatus() == 200 ||serverResponse.getStatus() == 201) && serverResponse.getEntity() != null) {
-            try {
-                json = new Scanner((InputStream) serverResponse.getEntity(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
-            } catch (Throwable th) {}
+            json = toJson(serverResponse);
         }
 
-        HashMap<String, String> headerParams = null;
-        if (serverResponse.getHeaders() != null) {
-            headerParams  = new HashMap<>();
-            for (Map.Entry<String, List<Object>> entry : serverResponse.getHeaders().entrySet()) {
-                headerParams.put(entry.getKey(), StringUtil.join(entry.getValue(), ","));
-            }
-        }
+        final HashMap<String, String> headerParams = this.retrieveHeaderParams(serverResponse);
 
         return new Response(serverResponse.getStatus(), headerParams, json);
     }
@@ -145,36 +114,20 @@ public class RestJsonRequestProcessor implements RequestProcessor {
             currentTarget = currentTarget.path(resourcePath);
         }
 
-        if (request.getQueryParams() != null) {
-            for (Map.Entry<String, String> entry : request.getQueryParams().entrySet()) {
-                currentTarget = currentTarget.queryParam(entry.getKey(), entry.getValue());
-            }
-        }
+        currentTarget = this.setQueryParams(currentTarget, request);
 
         final Invocation.Builder invocationBuilder = currentTarget.request(MediaType.APPLICATION_JSON);
 
-        if (request.getHeaderParams() != null) {
-            for (Map.Entry<String, String> entry : request.getHeaderParams().entrySet()) {
-                invocationBuilder.header(entry.getKey(), entry.getValue());
-            }
-        }
+        this.setHeaderParams(invocationBuilder, request);
 
         final javax.ws.rs.core.Response serverResponse = invocationBuilder.put(Entity.json(request.getJson()));
 
         String json = null;
         if (serverResponse.getStatus() == 200 && serverResponse.getEntity() != null) {
-            try {
-                json = new Scanner((InputStream) serverResponse.getEntity(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
-            } catch (Throwable th) {}
+            json = toJson(serverResponse);
         }
 
-        HashMap<String, String> headerParams = null;
-        if (serverResponse.getHeaders() != null) {
-            headerParams  = new HashMap<>();
-            for (Map.Entry<String, List<Object>> entry : serverResponse.getHeaders().entrySet()) {
-                headerParams.put(entry.getKey(), StringUtil.join(entry.getValue(), ","));
-            }
-        }
+        final HashMap<String, String> headerParams = this.retrieveHeaderParams(serverResponse);
 
         return new Response(serverResponse.getStatus(), headerParams, json);
     }
@@ -185,29 +138,15 @@ public class RestJsonRequestProcessor implements RequestProcessor {
             currentTarget = currentTarget.path(resourcePath);
         }
 
-        if (request.getQueryParams() != null) {
-            for (Map.Entry<String, String> entry : request.getQueryParams().entrySet()) {
-                currentTarget = currentTarget.queryParam(entry.getKey(), entry.getValue());
-            }
-        }
+        currentTarget = this.setQueryParams(currentTarget, request);
 
         final Invocation.Builder invocationBuilder = currentTarget.request();
 
-        if (request.getHeaderParams() != null) {
-            for (Map.Entry<String, String> entry : request.getHeaderParams().entrySet()) {
-                invocationBuilder.header(entry.getKey(), entry.getValue());
-            }
-        }
+        this.setHeaderParams(invocationBuilder, request);
 
         final javax.ws.rs.core.Response serverResponse = invocationBuilder.delete();
 
-        HashMap<String, String> headerParams = null;
-        if (serverResponse.getHeaders() != null) {
-            headerParams  = new HashMap<>();
-            for (Map.Entry<String, List<Object>> entry : serverResponse.getHeaders().entrySet()) {
-                headerParams.put(entry.getKey(), StringUtil.join(entry.getValue(), ","));
-            }
-        }
+        final HashMap<String, String> headerParams = this.retrieveHeaderParams(serverResponse);
 
         return new Response(serverResponse.getStatus(), headerParams, null);
     }
@@ -215,6 +154,42 @@ public class RestJsonRequestProcessor implements RequestProcessor {
     private void initialize() {
         this.client = ClientBuilder.newClient();
         this.target = this.client.target(this.host).path(this.path);
+    }
+
+    private WebTarget setQueryParams(WebTarget currentTarget, final Request request) {
+        if (request.getQueryParams() != null) {
+            for (Map.Entry<String, String> entry : request.getQueryParams().entrySet()) {
+                currentTarget = currentTarget.queryParam(entry.getKey(), entry.getValue());
+            }
+        }
+        return currentTarget;
+    }
+
+    private void setHeaderParams(final Invocation.Builder invocationBuilder, final Request request) {
+        if (request.getHeaderParams() != null) {
+            for (Map.Entry<String, String> entry : request.getHeaderParams().entrySet()) {
+                invocationBuilder.header(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private HashMap<String, String> retrieveHeaderParams(final javax.ws.rs.core.Response serverResponse) {
+        HashMap<String, String> headerParams = null;
+        if (serverResponse.getHeaders() != null) {
+            headerParams  = new HashMap<>();
+            for (Map.Entry<String, List<Object>> entry : serverResponse.getHeaders().entrySet()) {
+                headerParams.put(entry.getKey(), StringUtil.join(entry.getValue(), ","));
+            }
+        }
+        return headerParams;
+    }
+
+    private String toJson(final javax.ws.rs.core.Response serverResponse) {
+        String json = null;
+        try {
+            json = new Scanner((InputStream) serverResponse.getEntity(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
+        } catch (Throwable th) {}
+        return json;
     }
 
     private void log(String resourcePath, Request request, Response response, long duration) {
@@ -234,7 +209,7 @@ public class RestJsonRequestProcessor implements RequestProcessor {
             preparedStatement.setInt(6, (response.getJson() != null ? response.getJson().getBytes(StandardCharsets.UTF_8).length : 0));
             preparedStatement.setInt(7, response.getStatus());
             preparedStatement.setLong(8, duration);
-            preparedStatement.setDate(9, new Date(System.currentTimeMillis()));
+            preparedStatement.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();
 
             preparedStatement.close();

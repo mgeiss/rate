@@ -59,7 +59,7 @@ public class TestExecutor {
             preparedStatement.setString(5, testScenario.getPath());
             preparedStatement.setString(6, testScenario.getWorkingHour().getUnit());
             preparedStatement.setString(7, testScenario.getRampUpDelay().getUnit());
-            preparedStatement.setDate(8, new Date(System.currentTimeMillis()));
+            preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();
 
             preparedStatement.close();
