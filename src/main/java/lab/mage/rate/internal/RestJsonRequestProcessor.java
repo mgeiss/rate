@@ -122,7 +122,7 @@ public class RestJsonRequestProcessor implements RequestProcessor {
         final javax.ws.rs.core.Response serverResponse = invocationBuilder.post(Entity.json(request.getJson()));
 
         String json = null;
-        if (serverResponse.getStatus() == 201 && serverResponse.getEntity() != null) {
+        if ((serverResponse.getStatus() == 200 ||serverResponse.getStatus() == 201) && serverResponse.getEntity() != null) {
             try {
                 json = new Scanner((InputStream) serverResponse.getEntity(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
             } catch (Throwable th) {}
