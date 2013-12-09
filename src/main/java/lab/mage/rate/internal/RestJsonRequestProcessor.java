@@ -10,7 +10,9 @@ import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +101,7 @@ public class RestJsonRequestProcessor implements RequestProcessor {
         final javax.ws.rs.core.Response serverResponse = invocationBuilder.post(Entity.json(request.getJson()));
 
         String json = null;
-        if ((serverResponse.getStatus() == 200 ||serverResponse.getStatus() == 201) && serverResponse.getEntity() != null) {
+        if ((serverResponse.getStatus() == 200 || serverResponse.getStatus() == 201) && serverResponse.getEntity() != null) {
             json = toJson(serverResponse);
         }
 
@@ -176,7 +178,7 @@ public class RestJsonRequestProcessor implements RequestProcessor {
     private HashMap<String, String> retrieveHeaderParams(final javax.ws.rs.core.Response serverResponse) {
         HashMap<String, String> headerParams = null;
         if (serverResponse.getHeaders() != null) {
-            headerParams  = new HashMap<>();
+            headerParams = new HashMap<>();
             for (Map.Entry<String, List<Object>> entry : serverResponse.getHeaders().entrySet()) {
                 headerParams.put(entry.getKey(), StringUtil.join(entry.getValue(), ","));
             }
@@ -188,7 +190,8 @@ public class RestJsonRequestProcessor implements RequestProcessor {
         String json = null;
         try {
             json = new Scanner((InputStream) serverResponse.getEntity(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
-        } catch (Throwable th) {}
+        } catch (Throwable th) {
+        }
         return json;
     }
 

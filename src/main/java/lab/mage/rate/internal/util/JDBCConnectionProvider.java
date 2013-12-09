@@ -3,8 +3,6 @@ package lab.mage.rate.internal.util;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 public class JDBCConnectionProvider {
 
