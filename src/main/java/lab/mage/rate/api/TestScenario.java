@@ -24,7 +24,7 @@ public class TestScenario {
 
     public static class Builder {
 
-        private String uniqueId;
+        private String name;
         private String description;
         private String host;
         private String documentRoot;
@@ -32,9 +32,9 @@ public class TestScenario {
         private RampUpDelay rampUpDelay;
         private List<RobotEntry> robotEntries;
 
-        private Builder(String uniqueId, String description) {
+        private Builder(String name, String description) {
             super();
-            this.uniqueId = uniqueId;
+            this.name = name;
             this.description = description;
         }
 
@@ -67,7 +67,7 @@ public class TestScenario {
         }
 
         public TestScenario build() {
-            return new TestScenario(this.uniqueId, this.description, this.host, this.documentRoot, this.workingHour,
+            return new TestScenario(this.name, this.description, this.host, this.documentRoot, this.workingHour,
                     this.rampUpDelay, this.robotEntries);
         }
     }
@@ -140,8 +140,8 @@ public class TestScenario {
         return robotEntries;
     }
 
-    public static Builder create(final String uniqueId, final String description) {
-        return new Builder(uniqueId, description);
+    public static Builder create(final String name, final String description) {
+        return new Builder(name, description);
     }
 
     public void execute() {
