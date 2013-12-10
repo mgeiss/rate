@@ -1,3 +1,18 @@
+/**
+ * Copyright 2013 Markus Geiss
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package lab.mage.rate.internal;
 
 import lab.mage.rate.api.Robot;
@@ -17,7 +32,7 @@ public class TestExecutor {
         final int testScenarioId = this.storeTestScenario(testScenario);
 
         final String host = testScenario.getHost();
-        final String path = testScenario.getPath();
+        final String path = testScenario.getDocumentRoot();
         final long lifetime = testScenario.getWorkingHour().getDuration();
         final long rampUpDelay = testScenario.getRampUpDelay().getDuration();
 
@@ -56,7 +71,7 @@ public class TestExecutor {
             preparedStatement.setString(2, testScenario.getName());
             preparedStatement.setString(3, testScenario.getDescription());
             preparedStatement.setString(4, testScenario.getHost());
-            preparedStatement.setString(5, testScenario.getPath());
+            preparedStatement.setString(5, testScenario.getDocumentRoot());
             preparedStatement.setString(6, testScenario.getWorkingHour().getUnit());
             preparedStatement.setString(7, testScenario.getRampUpDelay().getUnit());
             preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));

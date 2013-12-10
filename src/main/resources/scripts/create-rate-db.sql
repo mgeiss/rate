@@ -27,7 +27,7 @@ CREATE TABLE test_scenario
   name          CHARACTER VARYING(255) NOT NULL,
   description   CHARACTER VARYING(4000),
   host          CHARACTER VARYING(255) NOT NULL,
-  path          CHARACTER VARYING(4000),
+  documentRoot          CHARACTER VARYING(4000),
   working_hours CHARACTER VARYING(10)  NOT NULL,
   delay         CHARACTER VARYING(10)  NOT NULL,
   created       TIMESTAMP              NOT NULL

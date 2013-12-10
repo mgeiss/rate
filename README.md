@@ -9,7 +9,7 @@ Usage
 -----
     final TestScenario testScenario = TestScenario.create("My test scenario", "some useful description")
             .host("http://localhost:4711")
-            .path("api")
+            .documentRoot("api")
             .workingHour(WorkingHour.ONE_HOUR)
             .rampUpDelay(RampUpDelay.FIVE_MINUTES)
             .addRobot(100, NewsFeedRobot.class)
