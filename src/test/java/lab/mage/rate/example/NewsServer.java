@@ -27,8 +27,11 @@ import org.glassfish.jersey.server.ContainerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import java.net.URI;
+import java.text.SimpleDateFormat;
 
 public class NewsServer {
+
+    public static final String ISO_8601_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
     public NewsServer() {
         super();
@@ -44,13 +47,15 @@ public class NewsServer {
         resourceConfig.register(newsService);
 
         // set Jackson as JSON provider
-        final ObjectMapper jsonMapper = new ObjectMapper();
-        jsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.setDateFormat(new SimpleDateFormat(ISO_8601_DATE_PATTERN));
+
         final JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
-        provider.setMapper(jsonMapper);
+        provider.setMapper(mapper);
         resourceConfig.register(provider);
 
-        // getConnection Grizzly instance and add handler
+        // create Grizzly instance and add handler
         final HttpHandler handler = ContainerFactory.createContainer(GrizzlyHttpContainer.class, resourceConfig);
         final URI uri = new URI("http://localhost:4711/");
         final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri);
